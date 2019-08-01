@@ -2,16 +2,24 @@
 
 -behaviour(gen_server).
 
-%% API
--export([start_link/2, insert/4]).
 
-%% gen_server callbacks
--export([init/1,
-  handle_call/3,
-  handle_cast/2,
-  handle_info/2,
-  terminate/2,
-  code_change/3]).
+-export([
+    start_link/2,
+    insert/4,
+    lookup/2,
+    lookup_by_date/3,
+    delete_obsolete/1
+]).
+
+
+-export([
+    init/1,
+    handle_call/3,
+    handle_cast/2,
+    handle_info/2,
+    terminate/2,
+    code_change/3
+]).
 
 -define(SERVER, ?MODULE).
 
@@ -42,6 +50,7 @@ lookup(TableName, Key) ->
 lookup_by_date(TableName, DateFrom, DateTo) ->
     gen_server:call(?MODULE, {lookup_by_date, TableName, DateFrom, DateTo}).
 
+
 handle_call({insert, TableName, Key, Value, TTL}, _From, State) ->
     StartAsSeconds = get_time_now_as_seconds(),
     EndDateSeconds = StartAsSeconds + TTL,
@@ -63,26 +72,21 @@ handle_call({lookup_by_date, TableName, DateFrom, DateTo}, _From, State) ->
     DateFromAsSeconds = calendar:datetime_to_gregorian_seconds(DateFrom),
     DateToAsSeconds = calendar:datetime_to_gregorian_seconds(DateTo),
     FirstKey = ets:first(TableName),
-    
-        
-
-
+    KeyValueList = lookup_by_range(TableName, FirstKey, DateFromAsSeconds, DateToAsSeconds),
+    Reply = {ok, KeyValueList},
+    {reply, Reply, State};
 
 handle_call(_Request, _From, State) ->
   {reply, ok, State}.
 
-
 handle_cast(_Request, State) ->
   {noreply, State}.
-
 
 handle_info(_Info, State) ->
   {noreply, State}.
 
-
 terminate(_Reason, _State) ->
   ok.
-
 
 code_change(_OldVsn, State, _Extra) ->
   {ok, State}.
@@ -91,10 +95,11 @@ code_change(_OldVsn, State, _Extra) ->
 get_time_now_as_seconds() -> 
     calendar:datetime_to_gregorian_seconds(calendar:local_time()).
 
+
 delete_obsolete(TableName) ->
     FirstKey = ets:first(TableName),
     NowSeconds = get_time_now_as_seconds(),
-    <<"done">> = delete_obsolete(TableName, FirstKey, NowSeconds), 
+    delete_obsolete(TableName, FirstKey, NowSeconds),
     ok.
 
 delete_obsolete(_TableName, '$end_of_table', _NowSeconds) ->      
@@ -109,3 +114,19 @@ delete_obsolete(TableName, Key, NowSeconds) ->
         _ -> true
     end, 
     delete_obsolete(TableName, NextKey, NowSeconds).
+
+
+lookup_by_range(TableName, FirstKey, DateFrom, DateTo) ->
+    lookup_by_range(TableName, FirstKey, DateFrom, DateTo, []).
+
+lookup_by_range(_TableName, '$end_of_table', _DateFrom, _DateTo, AccList) -> AccList;
+
+lookup_by_range(TableName, Key, DateFrom, DateTo, AccList) ->
+    NextKey = ets:next(TableName, Key),
+    KVList = ets:lookup(TableName, Key),
+    NewAccList = case KVList of
+        [{Key, Value, StartAsSeconds, _EndDateSeconds}] when StartAsSeconds >= DateFrom andalso  StartAsSeconds =< DateTo ->
+            [{Key, Value} | AccList];
+        _ -> AccList
+    end,
+    lookup_by_range(TableName, NextKey, DateFrom, DateTo, NewAccList).

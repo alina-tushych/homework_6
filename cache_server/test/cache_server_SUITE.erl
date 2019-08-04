@@ -35,7 +35,7 @@ init_per_testcase(test_insert, Config) ->
 init_per_testcase(test_lookup, Config) ->
     Test3 = #{
             <<"table_name">> => a,
-            <<"key">> => gh
+            <<"key">> => gh2
     },
     [{<<"lookup">>, Test3} | Config];
 
@@ -67,11 +67,8 @@ test_start_link(Config) ->
     Map = proplists:get_value(<<"start_link">>, Config),
     TableName = maps:get(<<"table_name">>, Map),
     DropInterval = maps:get(<<"drop_interval">>, Map),    
-    ?_assertEqual(
-        ok,
-    
-        cache_server:start_link(TableName, [{drop_interval, DropInterval}])
-    ).
+    {ok, Pid} = cache_server:start_link(TableName, [{drop_interval, DropInterval}]),
+    true = is_pid(Pid).
 
 test_insert(Config) ->
     Map = proplists:get_value(<<"insert">>, Config),
@@ -81,7 +78,6 @@ test_insert(Config) ->
     TTL = maps:get(<<"ttl">>, Map),   
     ?_assertEqual(
         ok, 
-        
         cache_server:insert(TableName, Key, Value, TTL)
     ).
 
@@ -90,8 +86,7 @@ test_lookup(Config) ->
     TableName = maps:get(<<"table_name">>, Map),
     Key = maps:get(<<"key">>, Map),   
     ?_assertEqual(
-        ok, 
-     
+        undefined,
         cache_server:lookup(TableName, Key)
     ).
 
@@ -101,7 +96,6 @@ test_lookup_by_date(Config) ->
     DateFrom = maps:get(<<"date_from">>, Map), 
     DateTo = maps:get(<<"date_to">>, Map),
     ?_assertEqual(
-        ok, 
-        
+        {ok, []},
         cache_server:lookup_by_date(TableName, DateFrom, DateTo)
     ).

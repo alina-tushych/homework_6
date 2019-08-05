@@ -1,30 +1,21 @@
---- Test run on 2019/08/01 20:28:55 ---
-Converting "/home/alina/betinvest/cache_server/." to "/home/alina/betinvest/cache_server" and re-inserting with add_patha/1
+--- Test run on 2019/08/04 15:59:30 ---
+Converting "/home/alina/betinvest/homework_6/cache_server/." to "/home/alina/betinvest/homework_6/cache_server" and re-inserting with add_patha/1
 
 
-Common Test v1.15.3 starting (cwd is /home/alina/betinvest/cache_server)
+Common Test v1.15.3 starting (cwd is /home/alina/betinvest/homework_6/cache_server)
 
 
 Common Test: Running make in test directories...
 Recompile: cache_server_SUITE
 cache_server_SUITE.erl:3: Warning: export_all flag enabled - all functions will be exported
-cache_server_SUITE.erl:78: Warning: variable 'TableName' is unused
-cache_server_SUITE.erl:79: Warning: variable 'Key' is unused
-cache_server_SUITE.erl:80: Warning: variable 'Value' is unused
-cache_server_SUITE.erl:81: Warning: variable 'TTL' is unused
-cache_server_SUITE.erl:90: Warning: variable 'TableName' is unused
-cache_server_SUITE.erl:91: Warning: variable 'Key' is unused
-cache_server_SUITE.erl:100: Warning: variable 'TableName' is unused
-cache_server_SUITE.erl:101: Warning: variable 'DateFrom' is unused
-cache_server_SUITE.erl:102: Warning: variable 'DateTo' is unused
 
-CWD set to: "/home/alina/betinvest/cache_server/logs/ct_run.test8372@alina-Aspire-A315-21.2019-08-01_20.28.55"
+CWD set to: "/home/alina/betinvest/homework_6/cache_server/logs/ct_run.test2646@alina-Aspire-A315-21.2019-08-04_15.59.30"
 
 TEST INFO: 1 test(s), 4 case(s) in 1 suite(s)
 
-Testing betinvest.cache_server: Starting test, 4 test cases
-Testing betinvest.cache_server: TEST COMPLETE, 4 ok, 0 failed of 4 test cases
+Testing homework_6.cache_server: Starting test, 4 test cases
+Testing homework_6.cache_server: TEST COMPLETE, 4 ok, 0 failed of 4 test cases
 
-Updating /home/alina/betinvest/cache_server/logs/index.html ... done
-Updating /home/alina/betinvest/cache_server/logs/all_runs.html ... done
+Updating /home/alina/betinvest/homework_6/cache_server/logs/index.html ... done
+Updating /home/alina/betinvest/homework_6/cache_server/logs/all_runs.html ... done
 

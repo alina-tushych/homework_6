@@ -1,6 +1,6 @@
 .rebar/*
 ebin/*
 logs/*
-
+test/*.beam
 
 
